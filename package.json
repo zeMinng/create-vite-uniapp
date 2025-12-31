@@ -1,6 +1,6 @@
 {
   "name": "create-vite-uniapp",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A fast CLI to bootstrap production-ready Uniapp projects.",
   "type": "module",
   "bin": {
@@ -8,7 +8,7 @@
   },
   "files": [
     "index.js",
-    "templates-*",
+    "templates",
     "dist"
   ],
   "scripts": {

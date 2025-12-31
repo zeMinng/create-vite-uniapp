@@ -5,31 +5,64 @@ import { getProjectInfo } from '../prompts.js'
 import { log } from '../utils/logger.js'
 
 /**
- * 获取项目根目录（包含 templates 目录的目录）
+ * 获取模板目录路径
+ * 支持两种场景：
+ * 1. 本地开发：从 dist/actions/create.js 向上查找项目根目录
+ * 2. npm create：从包根目录（index.js 所在位置）查找 templates
  */
-function getProjectRoot(): string {
+function getTemplatesDir(): string {
   const currentFile = fileURLToPath(import.meta.url)
   let currentDir = path.dirname(currentFile)
 
-  // 从当前文件位置向上查找，直到找到包含 templates 目录的目录
+  // 场景1: 从当前文件位置向上查找，直到找到包含 templates 目录的目录
   while (currentDir !== path.dirname(currentDir)) {
     const templatesPath = path.join(currentDir, 'templates')
     if (fs.existsSync(templatesPath)) {
-      return currentDir
+      return templatesPath
     }
     currentDir = path.dirname(currentDir)
   }
 
-  // 如果找不到，回退到从 dist 目录向上查找
+  // 场景2: npm create 场景 - 从 index.js 的位置查找（包根目录）
+  // index.js 在包根目录，templates 也在包根目录
+  // 需要从 dist/actions/create.js 向上找到包根目录
   const distDir = path.dirname(currentFile)
   if (distDir.includes('dist')) {
-    return path.resolve(distDir, '..')
+    // 从 dist/actions 向上到包根目录
+    const packageRoot = path.resolve(distDir, '../..')
+    const templatesPath = path.join(packageRoot, 'templates')
+    if (fs.existsSync(templatesPath)) {
+      return templatesPath
+    }
   }
 
-  throw new Error('无法找到项目根目录')
+  // 场景3: 如果是在 node_modules 中（npm create 场景）
+  // 尝试从当前文件向上查找 node_modules，然后找到包根目录
+  let searchDir = currentFile
+  while (searchDir !== path.dirname(searchDir)) {
+    if (path.basename(searchDir) === 'node_modules') {
+      // 在 node_modules 中找到包目录
+      const packageDir = path.join(searchDir, 'create-vite-uniapp')
+      const templatesPath = path.join(packageDir, 'templates')
+      if (fs.existsSync(templatesPath)) {
+        return templatesPath
+      }
+      break
+    }
+    searchDir = path.dirname(searchDir)
+  }
+
+  // 添加调试信息
+  const errorMsg = [
+    '无法找到模板目录。',
+    `当前文件位置: ${currentFile}`,
+    `已搜索到: ${currentDir}`,
+    '请确保 templates 目录存在于包根目录。',
+  ].join('\n')
+  throw new Error(errorMsg)
 }
 
-const templatesDir = path.join(getProjectRoot(), 'templates')
+const templatesDir = getTemplatesDir()
 
 /**
  * 递归复制目录（同步）
@@ -76,6 +109,14 @@ export async function createProject(
 
   if (!fs.existsSync(templateDir)) {
     log.error(`模板 "${template}" 未找到`)
+    log.error(`模板目录路径: ${templateDir}`)
+    log.error(`templates 根目录: ${templatesDir}`)
+    if (fs.existsSync(templatesDir)) {
+      const availableTemplates = fs.readdirSync(templatesDir, { withFileTypes: true })
+        .filter(dirent => dirent.isDirectory())
+        .map(dirent => dirent.name)
+      log.info(`可用的模板: ${availableTemplates.join(', ')}`)
+    }
     process.exit(1)
   }
 
