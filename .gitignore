@@ -1,8 +1,5 @@
 # Dependencies
 node_modules/
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
 
 # Logs
 logs
@@ -18,8 +15,6 @@ lerna-debug.log*
 Thumbs.db
 
 # Editor
-.vscode/
-.idea/
 *.swp
 *.swo
 *~

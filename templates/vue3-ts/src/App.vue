@@ -1,10 +1,13 @@
-<template>
-  <view class="app">
-    <h1>UniApp Vue3 + TypeScript</h1>
-    <pages-index />
-  </view>
-</template>
-
 <script setup lang="ts">
-import PagesIndex from './pages/index/index.vue'
+import { onLaunch, onShow, onHide } from "@dcloudio/uni-app";
+onLaunch(() => {
+  console.log("App Launch");
+});
+onShow(() => {
+  console.log("App Show");
+});
+onHide(() => {
+  console.log("App Hide");
+});
 </script>
+<style></style>

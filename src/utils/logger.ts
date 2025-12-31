@@ -1,7 +1,21 @@
-import { green, red, blue } from 'kolorist'
+import colors from 'picocolors'
+import * as prompts from '@clack/prompts'
 
 export const log = {
-  info: (msg: string) => console.log(blue(msg)),
-  success: (msg: string) => console.log(green(msg)),
-  error: (msg: string) => console.log(red(msg))
+  info: (msg: string) => {
+    prompts.log.info(colors.cyan(msg))
+  },
+  success: (msg: string) => {
+    prompts.log.success(colors.green(msg))
+  },
+  error: (msg: string) => {
+    prompts.log.error(colors.red(msg))
+  },
+  warning: (msg: string) => {
+    prompts.log.warn(colors.yellow(msg))
+  },
+  step: (msg: string) => {
+    prompts.log.step(colors.blue(msg))
+  },
 }
+
