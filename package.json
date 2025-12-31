@@ -1,0 +1,52 @@
+{
+  "name": "create-vite-uniapp",
+  "version": "0.1.0",
+  "description": "A fast CLI to bootstrap production-ready Uniapp projects.",
+  "type": "module",
+  "bin": {
+    "create-uniapp": "dist/index.js"
+  },
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "templates"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zeMinng/create-vite-uniapp.git"
+  },
+  "keywords": [
+    "create-uniapp",
+    "uniapp",
+    "vue",
+    "vite",
+    "cli",
+    "scaffold",
+    "boilerplate",
+    "template"
+  ],
+  "author": "zeMinng",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^25.0.3",
+    "@types/prompts": "^2.4.9",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "cac": "^6.7.14",
+    "fs-extra": "^11.3.3",
+    "kolorist": "^1.8.0",
+    "prompts": "^2.4.2"
+  }
+}

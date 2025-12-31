@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    /* Node + ESM CLI 专用配置 */
+    "target": "ES2020",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+
+    /* 输出 */
+    "outDir": "dist",
+    "rootDir": "src",
+
+    /* 类型 & 兼容 */
+    "strict": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+
+    /* Node */
+    "types": ["node"]
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}
