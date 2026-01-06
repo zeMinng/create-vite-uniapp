@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+*.swp
+*.swo
+*~
+
+# Test
+coverage/
+.nyc_output/
+
+# Build
+dist/
+build/
+bundle.js
+
+# Environment
+.env
+.env.local
+.env.*.local
+
