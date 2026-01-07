@@ -10,32 +10,31 @@ const argv = mri<{
   help?: boolean
   overwrite?: boolean
   immediate?: boolean
-  interactive?: boolean
+  version?: boolean
 }>(process.argv.slice(2), {
-  boolean: ['help', 'overwrite', 'immediate', 'interactive'],
-  alias: { h: 'help', t: 'template', i: 'immediate' },
+  boolean: ['help', 'overwrite', 'version'],
+  alias: { h: 'help', t: 'template', f: 'overwrite', i: 'immediate', v: 'version' },
   string: ['template'],
 })
 
 function printHelp() {
   console.log(`
-${colors.bold('create-uniapp')} - 快速创建 uni-app 项目
+  ${colors.cyan(colors.bold('create-vite-uniapp: quickly create a uniapp project'))}
 
-${colors.bold('用法:')}
-  npm create vite-uniapp@latest [项目名称] [选项]
+  ${colors.bold('Usage:')}
+    npm create vite-uniapp@latest [project-name] [options]
 
-${colors.bold('选项:')}
-  -h, --help          显示帮助信息
-  -t, --template      指定模板 (默认: vue3-ts)
-  --overwrite         如果目录已存在，覆盖它
-  -i, --immediate     跳过依赖安装
-  --interactive       强制交互式模式
+  ${colors.bold('Options:')}
+    -t, --template      ${colors.dim('specify template (default: vue3-ts)')}
+    -f, --overwrite     ${colors.dim('if the directory already exists overwrite it')}
+    -i, --immediate     ${colors.dim('skip dependency installation')}
+    -h, --help          ${colors.dim('show help information')}
 
-${colors.bold('示例:')}
-  npm create vite-uniapp@latest
-  npm create vite-uniapp@latest my-app
-  npm create vite-uniapp@latest my-app --template vue3-ts
-  npm create vite-uniapp@latest my-app --overwrite
+  ${colors.bold('Example:')}
+    npm create vite-uniapp@latest
+    npm create vite-uniapp@latest vite-uniapp
+    npm create vite-uniapp@latest vite-uniapp --template vue3-ts
+    npm create vite-uniapp@latest vite-uniapp --overwrite
 `)
 }
 
