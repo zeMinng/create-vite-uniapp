@@ -2,96 +2,88 @@ import path from 'node:path'
 import fs from 'node:fs'
 import mri from 'mri'
 import colors from 'picocolors'
-import { createProject } from './actions/create.js'
-import { log } from './utils/logger.js'
+import { printHelp, getVersion } from './cli/info'
+import { createProject } from './actions/create'
 
 const argv = mri<{
   template?: string
   help?: boolean
   overwrite?: boolean
-  immediate?: boolean
-  interactive?: boolean
+  install?: boolean
+  version?: boolean
 }>(process.argv.slice(2), {
-  boolean: ['help', 'overwrite', 'immediate', 'interactive'],
-  alias: { h: 'help', t: 'template', i: 'immediate' },
+  boolean: ['help', 'overwrite', 'install', 'version'],
+  alias: { h: 'help', t: 'template', f: 'overwrite', i: 'install', v: 'version' },
   string: ['template'],
 })
 
-function printHelp() {
-  console.log(`
-${colors.bold('create-uniapp')} - 快速创建 uni-app 项目
-
-${colors.bold('用法:')}
-  npm create vite-uniapp@latest [项目名称] [选项]
-
-${colors.bold('选项:')}
-  -h, --help          显示帮助信息
-  -t, --template      指定模板 (默认: vue3-ts)
-  --overwrite         如果目录已存在，覆盖它
-  -i, --immediate     跳过依赖安装
-  --interactive       强制交互式模式
-
-${colors.bold('示例:')}
-  npm create vite-uniapp@latest
-  npm create vite-uniapp@latest my-app
-  npm create vite-uniapp@latest my-app --template vue3-ts
-  npm create vite-uniapp@latest my-app --overwrite
-`)
-}
-
 async function init() {
+  // show help information
+  if (argv.help) {
+    printHelp()
+    return
+  }
+  // show version information
+  if (argv.version) {
+    getVersion(true)
+    return
+  }
+
   const argTargetDir = argv._[0]
     ? formatTargetDir(String(argv._[0]))
     : undefined
   const argTemplate = argv.template
   const argOverwrite = argv.overwrite
-  const argImmediate = argv.immediate
+  const argInstall= argv.install
 
-  // 显示帮助信息
-  if (argv.help) {
-    printHelp()
-    return
-  }
-
-  // 如果指定了目标目录，检查是否已存在
+  // if a project name is specified please check if it already exists
   if (argTargetDir) {
     const targetPath = path.resolve(process.cwd(), argTargetDir)
     if (fs.existsSync(targetPath)) {
       if (!argOverwrite) {
-        log.error(`目录 "${argTargetDir}" 已存在`)
-        log.info('使用 --overwrite 选项来覆盖现有目录')
+        console.log(`\n${colors.red(`Error: The directory "${argTargetDir}" already exists.`)}`)
+        console.log(`Use ${colors.cyan('-f')} or ${colors.cyan('--overwrite')} to force removal.\n`)
         process.exit(1)
       } else {
-        log.warning(`目录 "${argTargetDir}" 已存在，将被覆盖`)
-        // 递归删除目录
+        console.log(`${colors.yellow('! ')}Removing existing directory "${argTargetDir}"...`)
+        // recursively delete directory
         fs.rmSync(targetPath, { recursive: true, force: true })
       }
     }
   }
 
   try {
-    // 创建项目
     await createProject(argTargetDir, {
       template: argTemplate,
     })
-
-    // 如果指定了目标目录，显示下一步操作
-    if (argTargetDir) {
-      log.step(`下一步操作:`)
-      console.log(`  cd ${argTargetDir}`)
-      if (!argImmediate) {
-        console.log(`  npm install`)
-      }
-      console.log(`  npm run dev`)
-    }
   } catch (error) {
     if (error instanceof Error) {
-      log.error(error.message)
+      console.log(`\n${colors.red(`Error: ${error.message}`)}`)
     } else {
-      log.error('创建项目时发生未知错误')
+      console.log(`\n${colors.red('an unknown error occurred while creating the project')}`)
     }
     process.exit(1)
   }
+
+  // conclusion and guidance
+  const pkgManager = getPkgManager()
+  const nextSteps = [
+    argTargetDir && `cd ${argTargetDir}`,
+    argInstall && `${pkgManager} install`, 
+    `${pkgManager} run dev`
+  ].filter(Boolean)
+  console.log('Done. Next steps:')
+  console.log(nextSteps.join('\n'))
+}
+
+function getPkgManager() {
+  const userAgent = process.env.npm_config_user_agent
+  if (userAgent) {
+    if (userAgent.startsWith('yarn')) return 'yarn'
+    if (userAgent.startsWith('pnpm')) return 'pnpm'
+    if (userAgent.startsWith('bun')) return 'bun'
+  }
+  return 'npm'
 }
 
 function formatTargetDir(targetDir: string) {

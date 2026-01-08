@@ -12,6 +12,9 @@
     "noUnusedLocals": true,
     "esModuleInterop": true,
     "noEmit": true,
+    "paths": {
+      "@pkg": ["./package.json"]
+    },
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]
