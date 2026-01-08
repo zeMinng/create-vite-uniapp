@@ -371,13 +371,13 @@ export async function createProject(
     process.exit(1)
   }
 
-  log.info(`正在创建项目 ${projectName}...`)
+  log.info(`creating project ${projectName}...`)
 
   // 1. 复制基础模板骨架
   copyDirSync(baseTemplateDir, targetDir)
 
   // 2. 根据语言 + 用户选择的特性，应用对应的组合（JS 运行时、TS 工具链、TS 配置、ESLint 等）
-  applyTemplateFeatures(language, targetDir, features, projectName)
+  // applyTemplateFeatures(language, targetDir, features, projectName)
 
   // 处理 .gitignore 文件（模板中可能使用 _gitignore 作为文件名）
   const gitignore = path.join(targetDir, '_gitignore')
@@ -385,5 +385,5 @@ export async function createProject(
     fs.renameSync(gitignore, path.join(targetDir, '.gitignore'))
   }
 
-  log.success('项目创建成功 🎉')
+  log.success('project created successfully 🎉')
 }

@@ -20,49 +20,49 @@ export async function getProjectInfo(
 ): Promise<ProjectInfo> {
   prompts.intro(colors.bgCyan(colors.black(' create-uniapp ')))
 
-  // 1. 先询问项目名称
+  // 1. ask for the project name first
   const projectName = await prompts.text({
-    message: '项目名称是什么？',
-    initialValue: defaultName || 'my-uniapp',
+    message: 'what is the name of the project:',
+    initialValue: defaultName || 'vite-uniapp',
     validate: (value) => {
       if (!value || value.trim().length === 0) {
-        return '项目名称不能为空'
+        return 'project name cannot be empty'
       }
       if (!isValidPackageName(value)) {
-        return '项目名称格式不正确，只能包含小写字母、数字、连字符和下划线'
+        return 'the project name format is incorrect. Only letters, numbers, hyphens and underscores are allowed'
       }
       return
     },
   })
 
   if (prompts.isCancel(projectName)) {
-    prompts.cancel('操作已取消')
+    prompts.cancel('operation canceled')
     process.exit(0)
   }
 
   // 2. 询问使用 JS 还是 TS
   const language = await prompts.select<ProjectLanguage>({
-    message: '选择项目语言',
+    message: 'select project language:',
     options: [
-      { value: 'ts', label: 'TypeScript', hint: '推荐' },
+      { value: 'ts', label: 'TypeScript', hint: 'recommend' },
       { value: 'js', label: 'JavaScript' },
     ],
     initialValue: 'ts',
   })
 
   if (prompts.isCancel(language)) {
-    prompts.cancel('操作已取消')
+    prompts.cancel('operation canceled')
     process.exit(0)
   }
 
   // 3. 询问是否启用 ESLint（后续可继续在这里追加更多特性）
   const enableEslint = await prompts.confirm({
-    message: '是否启用 ESLint（包含 Vue + TypeScript 规则）？',
+    message: 'enable es lint including vue and type script rules:',
     initialValue: true,
   })
 
   if (prompts.isCancel(enableEslint)) {
-    prompts.cancel('操作已取消')
+    prompts.cancel('operation canceled')
     process.exit(0)
   }
 
