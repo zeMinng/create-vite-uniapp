@@ -1,33 +1,32 @@
-name: Publish to npm
+name: Publish-Release
 
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
-  publish-npm:
+  release:
+    environment: Publish-Release
     runs-on: ubuntu-latest
-
     permissions:
       contents: read
       id-token: write
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 20
-          registry-url: https://registry.npmjs.org/
+          node-version: "lts/*"
+          registry-url: "https://registry.npmjs.org"
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build package
-        run: npm run build
+      - name: Update npm
+        run: npm install -g npm@latest
+      - run: npm ci
+      - run: npm run build
 
       - name: Check version matches tag
         run: |
@@ -40,9 +39,4 @@ jobs:
             exit 1
           fi
 
-      - name: Publish to npm
-        run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-            
+      - run: npm publish

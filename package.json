@@ -14,7 +14,8 @@
   "scripts": {
     "dev": "tsdown --watch",
     "build": "tsdown",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "release": "standard-version && git push --follow-tags origin main"
   },
   "engines": {
     "node": ">=20"
@@ -42,7 +43,12 @@
     "cross-spawn": "^7.0.6",
     "mri": "^1.2.0",
     "picocolors": "^1.1.1",
+    "standard-version": "^9.5.0",
     "tsdown": "^0.18.4",
     "tsx": "^4.21.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
   }
 }
