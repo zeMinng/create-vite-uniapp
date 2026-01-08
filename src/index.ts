@@ -1,57 +1,21 @@
 import path from 'node:path'
-import { fileURLToPath } from 'url'
 import fs from 'node:fs'
 import mri from 'mri'
 import colors from 'picocolors'
-import { createProject } from './actions/create.js'
-import { log } from './utils/logger.js'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+import { printHelp, getVersion } from './cli/info'
+import { createProject } from './actions/create'
 
 const argv = mri<{
   template?: string
   help?: boolean
   overwrite?: boolean
-  immediate?: boolean
+  install?: boolean
   version?: boolean
 }>(process.argv.slice(2), {
-  boolean: ['help', 'overwrite', 'immediate', 'version'],
-  alias: { h: 'help', t: 'template', f: 'overwrite', i: 'immediate', v: 'version' },
+  boolean: ['help', 'overwrite', 'install', 'version'],
+  alias: { h: 'help', t: 'template', f: 'overwrite', i: 'install', v: 'version' },
   string: ['template'],
 })
-
-function printHelp() {
-  console.log(`
-  ${colors.cyan(colors.bold('create-vite-uniapp: quickly create a uniapp project'))}
-
-  ${colors.bold('Usage:')}
-    npm create vite-uniapp@latest [project-name] [options]
-
-  ${colors.bold('Options:')}
-    -t, --template      ${colors.dim('specify template (default: vue3-ts)')}
-    -f, --overwrite     ${colors.dim('if the directory already exists overwrite it')}
-    -i, --immediate     ${colors.dim('skip dependency installation')}
-    -h, --help          ${colors.dim('show help information')}
-    -v, --version       ${colors.dim('show version number')}
-
-  ${colors.bold('Example:')}
-    npm create vite-uniapp@latest
-    npm create vite-uniapp@latest vite-uniapp
-
-    ${colors.gray('# force overwrite target file (强制覆盖目标文件)')}
-    npm create vite-uniapp@latest vite-uniapp -f
-
-    ${colors.gray('# create a project but skip installing dependencies (创建项目但跳过依赖安装)')}
-    npm create vite-uniapp@latest vite-uniapp -t vue3-ts -i
-`)
-}
-
-function getVersion() {
-  const pkgPath = path.resolve(__dirname, '../package.json')
-  const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'))
-  return pkg.version
-}
 
 async function init() {
   // show help information
@@ -61,30 +25,27 @@ async function init() {
   }
   // show version information
   if (argv.version) {
-    console.log(`${colors.cyan('create-vite-uniapp:')} ${colors.green('v' + getVersion())}`)
+    getVersion(true)
     return
-  }
-  if (process.env.NODE_ENV === 'development') {
-    console.log('%c [ argv ]-47', 'font-size:13px; background:pink; color:#bf2c9f;', argv)
   }
 
   const argTargetDir = argv._[0]
-  ? formatTargetDir(String(argv._[0]))
-  : undefined
+    ? formatTargetDir(String(argv._[0]))
+    : undefined
   const argTemplate = argv.template
   const argOverwrite = argv.overwrite
-  const argImmediate = argv.immediate
+  const argInstall= argv.install
 
   // if a project name is specified please check if it already exists
   if (argTargetDir) {
     const targetPath = path.resolve(process.cwd(), argTargetDir)
     if (fs.existsSync(targetPath)) {
       if (!argOverwrite) {
-        log.error(`the directory "${argTargetDir}" already exists`)
-        log.info('use the -f/--overwrite  option to overwrite the existing directory')
+        console.log(`\n${colors.red(`Error: The directory "${argTargetDir}" already exists.`)}`)
+        console.log(`Use ${colors.cyan('-f')} or ${colors.cyan('--overwrite')} to force removal.\n`)
         process.exit(1)
       } else {
-        log.warning(`the directory "${argTargetDir}" already exists and will be overwritten`)
+        console.log(`${colors.yellow('! ')}Removing existing directory "${argTargetDir}"...`)
         // recursively delete directory
         fs.rmSync(targetPath, { recursive: true, force: true })
       }
@@ -92,28 +53,37 @@ async function init() {
   }
 
   try {
-    // 创建项目
     await createProject(argTargetDir, {
       template: argTemplate,
     })
-
-    // 如果指定了目标目录，显示下一步操作
-    if (argTargetDir) {
-      log.step(`下一步操作:`)
-      console.log(`  cd ${argTargetDir}`)
-      if (!argImmediate) {
-        console.log(`  npm install`)
-      }
-      console.log(`  npm run dev`)
-    }
   } catch (error) {
     if (error instanceof Error) {
-      log.error(error.message)
+      console.log(`\n${colors.red(`Error: ${error.message}`)}`)
     } else {
-      log.error('创建项目时发生未知错误')
+      console.log(`\n${colors.red('an unknown error occurred while creating the project')}`)
     }
     process.exit(1)
   }
+
+  // conclusion and guidance
+  const pkgManager = getPkgManager()
+  const nextSteps = [
+    argTargetDir && `cd ${argTargetDir}`,
+    argInstall && `${pkgManager} install`, 
+    `${pkgManager} run dev`
+  ].filter(Boolean)
+  console.log('Done. Next steps:')
+  console.log(nextSteps.join('\n'))
+}
+
+function getPkgManager() {
+  const userAgent = process.env.npm_config_user_agent
+  if (userAgent) {
+    if (userAgent.startsWith('yarn')) return 'yarn'
+    if (userAgent.startsWith('pnpm')) return 'pnpm'
+    if (userAgent.startsWith('bun')) return 'bun'
+  }
+  return 'npm'
 }
 
 function formatTargetDir(targetDir: string) {
