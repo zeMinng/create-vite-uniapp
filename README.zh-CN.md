@@ -1,5 +1,10 @@
 # create-vite-uniapp
 
+[![npm version](https://img.shields.io/npm/v/create-vite-uniapp?color=42b883&logo=npm)](https://www.npmjs.com/package/create-vite-uniapp)
+[![downloads](https://img.shields.io/npm/dw/create-vite-uniapp?color=42b883&logo=vuedotjs&logoColor=white)](https://npmjs.com/package/create-vite-uniapp)
+[![node compatibility](https://img.shields.io/node/v/create-vite-uniapp?color=42b883&logo=nodedotjs&logoColor=white)](https://nodejs.org/en/about/previous-releases)
+[![license](https://img.shields.io/github/license/zeMinng/create-vite-uniapp?color=42b883)](./LICENSE)
+
 一个基于 Vite 的极速 uni-app 项目脚手架工具。旨在提供比官方模板更现代、更轻量、更易扩展的开发体验。
 
 ## 🛠️ 快速开始
