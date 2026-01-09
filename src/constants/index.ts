@@ -61,7 +61,7 @@ export const PROMPTS_OPTIONS = {
   // is TS?
   isTypeScript: {
     name: 'isTypeScript',
-    type: 'toggle',
+    type: 'confirm',
     message: 'Add TypeScript?',
     initial: true,
     active: 'Yes',
@@ -70,12 +70,21 @@ export const PROMPTS_OPTIONS = {
   // is ESLint?
   needsEslint: {
     name: 'needsEslint',
-    type: 'toggle',
+    type: 'confirm',
     message: 'Add ESLint for code quality?',
     initial: false,
     active: 'Yes',
     inactive: 'No'
-  }
+  },
+  // is styleLint?
+  needsStylelint: {
+    name: 'needsStylelint',
+    type: 'confirm',
+    message: 'Add StyleLint for style quality?',
+    initial: false,
+    active: 'Yes',
+    inactive: 'No'
+  },
 }
 
 /**

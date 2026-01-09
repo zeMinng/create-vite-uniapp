@@ -1,5 +1,3 @@
-import path from 'node:path'
-import fs from 'node:fs'
 import mri from 'mri'
 import colors from 'picocolors'
 import { DEFAULT_PROJECT_NAME, MESSAGES } from './constants'
@@ -28,29 +26,14 @@ async function init() {
   console.log(MESSAGES.welcome)
 
   const argTargetDir = argv._[0] ? formatTargetDir(String(argv._[0])) : DEFAULT_PROJECT_NAME
-  const argTemplate = argv.template
+  // const argTemplate = argv.template
+  const argInstall = argv.install
   const argOverwrite = argv.overwrite
-
-  // if a project name is specified please check if it already exists
-  if (argTargetDir) {
-    const targetPath = path.resolve(process.cwd(), argTargetDir)
-    if (fs.existsSync(targetPath)) {
-      if (!argOverwrite) {
-        console.log(`\n${colors.red(`Error: The directory "${argTargetDir}" already exists.`)}`)
-        console.log(`Use ${colors.cyan('-f')} or ${colors.cyan('--overwrite')} to force removal.\n`)
-        process.exit(1)
-      } else {
-        console.log(`${colors.yellow('! ')}Removing existing directory "${argTargetDir}"...`)
-        // recursively delete directory
-        fs.rmSync(targetPath, { recursive: true, force: true })
-      }
-    }
-  }
 
   try {
     await createProject(argTargetDir, {
-      template: argTemplate,
-      // install: argv.install,
+      install: argInstall,
+      overwrite: argOverwrite,
     })
   } catch (error) {
     if (error instanceof Error) {
