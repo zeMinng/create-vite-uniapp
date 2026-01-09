@@ -24,7 +24,13 @@
     "type": "git",
     "url": "git+https://github.com/zeMinng/create-vite-uniapp.git"
   },
+  "bugs": {
+    "url": "https://github.com/zeMinng/create-vite-uniapp/issues"
+  },
+  "homepage": "https://github.com/zeMinng/create-vite-uniapp#readme",
   "keywords": [
+    "create-vite",
+    "create-vite-uniapp",
     "create-uniapp",
     "uniapp",
     "vue",

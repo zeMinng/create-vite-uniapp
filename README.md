@@ -1,5 +1,10 @@
 # create-vite-uniapp
 
+[![npm version](https://img.shields.io/npm/v/create-vite-uniapp?color=42b883&logo=npm)](https://www.npmjs.com/package/create-vite-uniapp)
+[![downloads](https://img.shields.io/npm/dw/create-vite-uniapp?color=42b883&logo=vuedotjs&logoColor=white)](https://npmjs.com/package/create-vite-uniapp)
+[![node compatibility](https://img.shields.io/node/v/create-vite-uniapp?color=42b883&logo=nodedotjs&logoColor=white)](https://nodejs.org/en/about/previous-releases)
+[![license](https://img.shields.io/github/license/zeMinng/create-vite-uniapp?color=42b883)](./LICENSE)
+
 A lightning-fast CLI for scaffolding uni-app projects powered by Vite. Designed to provide a more modern, lightweight, and extensible development experience than standard templates.
 
 ## 🛠️ Quick Start
