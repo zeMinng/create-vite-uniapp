@@ -2,6 +2,9 @@ import path from 'node:path'
 import fs from 'node:fs'
 import mri from 'mri'
 import colors from 'picocolors'
+import { DEFAULT_PROJECT_NAME, MESSAGES } from './constants'
+import { formatTargetDir } from './utils/validate'
+import { getPkgManager } from './utils/env'
 import { printHelp, getVersion } from './cli/info'
 import { createProject } from './actions/create'
 
@@ -18,23 +21,15 @@ const argv = mri<{
 })
 
 async function init() {
-  // show help information
-  if (argv.help) {
-    printHelp()
-    return
-  }
-  // show version information
-  if (argv.version) {
-    getVersion(true)
-    return
-  }
+  // show help and version information
+  if (argv.help) { printHelp(); return; }
+  if (argv.version) { getVersion(true); return; }
 
-  const argTargetDir = argv._[0]
-    ? formatTargetDir(String(argv._[0]))
-    : undefined
+  console.log(MESSAGES.welcome)
+
+  const argTargetDir = argv._[0] ? formatTargetDir(String(argv._[0])) : DEFAULT_PROJECT_NAME
   const argTemplate = argv.template
   const argOverwrite = argv.overwrite
-  const argInstall= argv.install
 
   // if a project name is specified please check if it already exists
   if (argTargetDir) {
@@ -55,6 +50,7 @@ async function init() {
   try {
     await createProject(argTargetDir, {
       template: argTemplate,
+      // install: argv.install,
     })
   } catch (error) {
     if (error instanceof Error) {
@@ -67,27 +63,8 @@ async function init() {
 
   // conclusion and guidance
   const pkgManager = getPkgManager()
-  const nextSteps = [
-    argTargetDir && `cd ${argTargetDir}`,
-    argInstall && `${pkgManager} install`, 
-    `${pkgManager} run dev`
-  ].filter(Boolean)
-  console.log('Done. Next steps:')
-  console.log(nextSteps.join('\n'))
-}
-
-function getPkgManager() {
-  const userAgent = process.env.npm_config_user_agent
-  if (userAgent) {
-    if (userAgent.startsWith('yarn')) return 'yarn'
-    if (userAgent.startsWith('pnpm')) return 'pnpm'
-    if (userAgent.startsWith('bun')) return 'bun'
-  }
-  return 'npm'
-}
-
-function formatTargetDir(targetDir: string) {
-  return targetDir.trim().replace(/\/+$/g, '')
+  console.log(MESSAGES.finishing(argTargetDir))
+  console.log(MESSAGES.nextSteps(argTargetDir, pkgManager))
 }
 
 init().catch((e) => {
