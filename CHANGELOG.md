@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.5](https://github.com/zeMinng/create-vite-uniapp/compare/v0.0.4...v0.0.5) (2026-01-10)
+
+
+### Features
+
+* add bugs and homepage fields to package.json ([9031020](https://github.com/zeMinng/create-vite-uniapp/commit/903102071cbd5ca910e803b09051781eff7b8f2e))
+* add constants and utility functions for project setup ([c91a171](https://github.com/zeMinng/create-vite-uniapp/commit/c91a171ec6512508d786f69f22211dae7d249e6a))
+* Change project creation interactive prompt ([0487fba](https://github.com/zeMinng/create-vite-uniapp/commit/0487fbaed2411ef73492f2f8d35a3b1b9499b0f8))
+* Modify project creation templates and configurations ([6b1a9d0](https://github.com/zeMinng/create-vite-uniapp/commit/6b1a9d0cea7379a4a6447858f9bf3cb05fa139ec))
+* Reconstruct project creation logic ([163125d](https://github.com/zeMinng/create-vite-uniapp/commit/163125d2a6a9e8cbd9fac1e6c4d528be5ced66d8))
+
 ### [0.0.4](https://github.com/zeMinng/create-vite-uniapp/compare/v0.0.3...v0.0.4) (2026-01-08)
 
 ### [0.0.3](https://github.com/zeMinng/create-vite-uniapp/compare/v0.0.2...v0.0.3) (2026-01-08)
