@@ -79,14 +79,14 @@ export const PROMPTS_OPTIONS = {
     inactive: 'No'
   },
   // is styleLint?
-  needsStylelint: {
-    name: 'needsStylelint',
-    type: 'confirm',
-    message: 'Add StyleLint for style quality?',
-    initial: false,
-    active: 'Yes',
-    inactive: 'No'
-  },
+  // needsStylelint: {
+  //   name: 'needsStylelint',
+  //   type: 'confirm',
+  //   message: 'Add StyleLint for style quality?',
+  //   initial: false,
+  //   active: 'Yes',
+  //   inactive: 'No'
+  // },
 }
 
 /**

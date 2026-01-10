@@ -1,5 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
+import { DEFAULT_PROJECT_NAME } from '../constants'
 
 /**
  * Copies the files from the source directory to the destination directory.
@@ -27,9 +28,11 @@ export function renderTemplate(src: string, dest: string) {
     const merged = {
       ...existing,
       ...incoming,
+      name: DEFAULT_PROJECT_NAME,
+      version: existing.version,
       scripts: { ...existing.scripts, ...incoming.scripts },
-      dependencies: { ...existing.dependencies, ...incoming.dependencies },
-      devDependencies: { ...existing.devDependencies, ...incoming.devDependencies },
+      dependencies: sortObject({ ...existing.dependencies, ...incoming.dependencies }),
+      devDependencies: sortObject({ ...existing.devDependencies, ...incoming.devDependencies }),
     }
     
     fs.writeFileSync(dest, JSON.stringify(merged, null, 2) + '\n')
@@ -37,4 +40,15 @@ export function renderTemplate(src: string, dest: string) {
   }
 
   fs.copyFileSync(src, dest)
+}
+
+function sortObject(obj: Record<string, string> | undefined) {
+  if (!obj) return undefined
+  const sorted: Record<string, string> = {}
+  Object.keys(obj)
+    .sort()
+    .forEach((key) => {
+      sorted[key] = obj[key]
+    })
+  return sorted
 }
