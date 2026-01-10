@@ -5,13 +5,13 @@ import { blue, cyan, green, yellow, magenta } from 'picocolors'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 /**
- * template root directory (模板根目录)
- */
-export const TEMPLATE_ROOT = path.resolve(__dirname, '../templates')
-/**
  * default project name (默认项目名称)
  */
 export const DEFAULT_PROJECT_NAME = 'my-vite-uniapp'
+/**
+ * template root directory (模板根目录)
+ */
+export const TEMPLATE_ROOT = path.resolve(__dirname, '../templates')
 /**
  * base template path (基础模板路径)
  */
@@ -27,13 +27,13 @@ export const FRAMEWORKS = [
     color: green,
     variants: [
       {
-        name: 'vue-ts',
+        name: 'ts',
         display: 'TypeScript',
         color: blue,
         path: path.join(TEMPLATE_ROOT, 'ts')
       },
       {
-        name: 'vue-js',
+        name: 'js',
         display: 'JavaScript',
         color: yellow,
         path: path.join(TEMPLATE_ROOT, 'js')
@@ -61,11 +61,13 @@ export const PROMPTS_OPTIONS = {
   // is TS?
   isTypeScript: {
     name: 'isTypeScript',
-    type: 'confirm',
-    message: 'Add TypeScript?',
-    initial: true,
-    active: 'Yes',
-    inactive: 'No'
+    type: 'select',
+    message: 'Pick a language:',
+    options: [
+      { value: true, label: 'TypeScript', hint: 'recommended' },
+      { value: false, label: 'JavaScript' }
+    ],
+    initialValue: true
   },
   // is ESLint?
   needsEslint: {

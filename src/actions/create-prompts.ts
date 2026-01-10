@@ -5,7 +5,14 @@ import {
   PROMPTS_OPTIONS,
 } from '../constants'
 
-export async function getProjectInfo(initialName: string) {
+type PromptResults = {
+  [K in keyof typeof PROMPTS_OPTIONS]: any
+}
+interface ProjectInfo extends PromptResults {
+  projectName: string
+}
+
+export async function getProjectInfo(initialName: string): Promise<ProjectInfo> {
   p.intro(colors.bgCyan(colors.black(` ${DEFAULT_PROJECT_NAME} `)))
 
   const result = await p.group(
@@ -35,5 +42,6 @@ export async function getProjectInfo(initialName: string) {
     }
   )
 
-  return result
+  p.outro(colors.green('Setup complete!'))
+  return result as ProjectInfo
 }

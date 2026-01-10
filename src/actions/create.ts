@@ -2,6 +2,8 @@ import fs from 'node:fs'
 import path from 'node:path'
 import colors from 'picocolors'
 import { getProjectInfo } from './create-prompts'
+import { renderTemplate } from './template-manager'
+import { TEMPLATE_ROOT, BASE_TEMPLATE_PATH, FRAMEWORKS } from '../constants'
 
 export interface CreateOptions {
   install?: boolean;
@@ -22,7 +24,14 @@ export async function createProject(
 
   // collect project creation information
   const result = await getProjectInfo(name)
-  console.log('%c [ result ]-27', 'font-size:13px; background:pink; color:#bf2c9f;', result)
+  const { projectName, isTypeScript, needsEslint } = result
+  const targetDir = path.resolve(process.cwd(), projectName)
+
+  // create project
+  const templateRoot = TEMPLATE_ROOT
+  renderTemplate(BASE_TEMPLATE_PATH, targetDir)
+  const variant = isTypeScript ? 'ts' : 'js'
+  renderTemplate(path.join(templateRoot, 'variants', variant), targetDir)
 }
 
 
