@@ -27,7 +27,7 @@ export async function createProject(
 
   // collect project creation information
   const result = await getProjectInfo(name)
-  const { projectName, isTypeScript, needsEslint } = result
+  const { projectName, isTypeScript, needsEslint, needsStylelint } = result
   const targetDir = path.resolve(process.cwd(), projectName)
 
   // create project
@@ -43,6 +43,11 @@ export async function createProject(
     renderTemplate(path.join(eslintRoot, 'base'), targetDir)
     // Step 2: Core
     renderTemplate(path.join(eslintRoot, 'core', variant), targetDir)
+  }
+  if (needsStylelint) {
+    const stylelintRoot = path.join(templateRoot, 'features', 'stylelint')
+    renderTemplate(path.join(stylelintRoot, 'base'), targetDir)
+    renderTemplate(path.join(stylelintRoot, 'core', variant), targetDir)
   }
 
   // install dependencies
