@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.6](https://github.com/zeMinng/create-vite-uniapp/compare/v0.0.5...v0.0.6) (2026-01-11)
+
+
+### Features
+
+* create add stylelint ([a712d8e](https://github.com/zeMinng/create-vite-uniapp/commit/a712d8e26fb387cadbafc04dbbc96d0aa1f44af6))
+* update readme ([70ec755](https://github.com/zeMinng/create-vite-uniapp/commit/70ec755f1444fb63be438386401ee3d5f192fe1b))
+
+
+### Bug Fixes
+
+* Project entry file type error ([1eab0b4](https://github.com/zeMinng/create-vite-uniapp/commit/1eab0b48a601dc9ce1eef64a1392d986c9115a8f))
+
 ### [0.0.5](https://github.com/zeMinng/create-vite-uniapp/compare/v0.0.4...v0.0.5) (2026-01-10)
 
 
