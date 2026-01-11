@@ -26,10 +26,7 @@ pnpm create vite-uniapp
 npm create vite-uniapp@latest
 
 # 指定项目名称
-npm create vite-uniapp@latest my-app
-
-# 指定模板
-npm create vite-uniapp@latest my-app --template vue3-ts
+npm create vite-uniapp@latest my-app -i -f -v -h
 ```
 
 ## 📁 项目结构

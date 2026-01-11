@@ -26,10 +26,7 @@ Run the command and follow the prompts, or specify options directly:
 npm create vite-uniapp@latest
 
 # With project name
-npm create vite-uniapp@latest my-app
-
-# With template
-npm create vite-uniapp@latest my-app --template vue3-ts
+npm create vite-uniapp@latest my-app -i -f -v -h
 ```
 
 ## 📁 Project Structure
