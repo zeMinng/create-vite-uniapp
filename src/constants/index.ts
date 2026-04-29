@@ -1,68 +1,38 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { blue, cyan, green, yellow, magenta } from 'picocolors'
+import { cyan, green, yellow, magenta } from 'picocolors'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-
-/**
- * default project name (默认项目名称)
- */
+// default project name (默认项目名称)
 export const DEFAULT_PROJECT_NAME = 'my-vite-uniapp'
-/**
- * template root directory (模板根目录)
- */
+// template root directory (模板根目录)
 export const TEMPLATE_ROOT = path.resolve(__dirname, '../templates')
-/**
- * base template path (基础模板路径)
- */
+// base template path (基础模板路径)
 export const BASE_TEMPLATE_PATH = path.join(TEMPLATE_ROOT, 'base')
 
 /**
- * framework options configuration (框架选项配置)
+ * terminal welcome and closing remarks (终端欢迎语和结束语)
  */
-export const FRAMEWORKS = [
-  {
-    name: 'vue',
-    display: 'Vue',
-    color: green,
-    variants: [
-      {
-        name: 'ts',
-        display: 'TypeScript',
-        color: blue,
-        path: path.join(TEMPLATE_ROOT, 'ts')
-      },
-      {
-        name: 'js',
-        display: 'JavaScript',
-        color: yellow,
-        path: path.join(TEMPLATE_ROOT, 'js')
-      }
-    ]
-  }
-]
-
-/**
- * features path mapping (特性路径映射)
- */
-export const FEATURE_PATHS = {
-  eslint: {
-    base: path.join(TEMPLATE_ROOT, 'features/eslint/base'),
-    js: path.join(TEMPLATE_ROOT, 'features/eslint/core/js'),
-    ts: path.join(TEMPLATE_ROOT, 'features/eslint/core/ts')
-  }
-  // add pinia and ...
+export const MESSAGES = {
+  welcome: `\n${magenta('🚀 Welcome to create-vite-uniapp!')}\n`,
+  finishing: (dir: string) => `\n${green('✨ Project created in')} ${cyan(dir)}\n`,
+  nextSteps: (name: string, pkgManager: string, shouldInstallDeps: boolean = true) => `
+  ${yellow('Next steps:')}
+    cd ${name}
+    ${shouldInstallDeps ? `${pkgManager} install` : 'skip dependency installation'}
+    ${pkgManager} run dev
+  `
 }
 
 /**
  * all options for interactive inquiry (所有交互式询问选项)
  */
 export const PROMPTS_OPTIONS = {
-  // is TS?
+  // select language.
   isTypeScript: {
     name: 'isTypeScript',
     type: 'select',
-    message: 'Pick a language:',
+    message: 'Select a variant:',
     options: [
       { value: true, label: 'TypeScript', hint: 'recommended' },
       { value: false, label: 'JavaScript' }
@@ -73,20 +43,23 @@ export const PROMPTS_OPTIONS = {
   needsEslint: {
     name: 'needsEslint',
     type: 'confirm',
-    message: 'Add ESLint for code quality?',
-    initial: false,
-    active: 'Yes',
-    inactive: 'No'
+    message: 'Add ESLint for project?',
+    initialValue: true,
   },
-  // is styleLint?
+  // is Stylelint?
   needsStylelint: {
     name: 'needsStylelint',
     type: 'confirm',
-    message: 'Add StyleLint for style quality?',
-    initial: false,
-    active: 'Yes',
-    inactive: 'No'
+    message: 'Add StyleLint for project?',
+    initialValue: true,
   },
+  // is Install When Creating A Project?
+  immediateInstall: {
+    name: 'immediateInstall',
+    type: 'confirm',
+    message: 'Install with npm and start now?',
+    initialValue: false,
+  }
 }
 
 /**
@@ -101,17 +74,3 @@ export const IGNORE_FILES = [
   'pnpm-lock.yaml',
   'yarn.lock'
 ]
-
-/**
- * terminal welcome and closing remarks (终端欢迎语和结束语)
- */
-export const MESSAGES = {
-  welcome: `\n${magenta('🚀 Welcome to create-vite-uniapp!')}\n`,
-  finishing: (dir: string) => `\n${green('✨ Project created in')} ${cyan(dir)}\n`,
-  nextSteps: (name: string, pkgManager: string) => `
-  ${yellow('Next steps:')}
-    cd ${name}
-    ${pkgManager} install
-    ${pkgManager} run dev
-  `
-}

@@ -1,64 +1,63 @@
 import fs from 'node:fs'
 import path from 'node:path'
-// import { spawn } from 'node:child_process'
+import { spawn } from 'node:child_process'
 import process from 'node:process'
 import colors from 'picocolors'
 import { getProjectInfo } from './create-prompts'
-import { renderTemplate } from './template-manager'
-import { TEMPLATE_ROOT, BASE_TEMPLATE_PATH } from '../constants'
+import type { TemplateVariant } from '../templates/registry'
+import { resolveTemplateLayers } from '../templates/resolve'
+import { applyTemplateLayers } from '../templates/render'
 import { getPkgManager } from '../utils/env'
 
 export interface CreateOptions {
   install?: boolean;
   overwrite?: boolean
 }
+
+/**
+ * create project function
+ * @param name project name. default is `my-vite-uniapp` (项目名称，默认为 `my-vite-uniapp`)
+ * @param options create options. from CLI flags (创建选项，来自 CLI 标志)
+ * @returns the final project name (最终项目名称)
+ * @description
+ * 1. collect project information through interactive prompts (通过交互式提示收集项目信息)
+ * 2. check for existence handle overwrite logic or exit the process (检查存在性并处理覆盖逻辑或退出进程)
+ * 3. create project (base -> variant -> optional features) (创建项目(基础 -> 变体 -> 可选特性))
+ * 4. install dependencies (安装依赖)
+ * 5. return the final project name (返回最终项目名称)
+ */
 export async function createProject(
   name: string,
   options: CreateOptions = {},
-) {
-  const { 
-    install = true,
+): Promise<string> {
+  const {
     overwrite = false
   } = options
 
-  // check if a directory with the same name exists
-  const targetPath = path.resolve(process.cwd(), name)
-  await prepareTargetDir(targetPath, overwrite)
-
   // collect project creation information
   const result = await getProjectInfo(name)
-  const { projectName, isTypeScript, needsEslint, needsStylelint } = result
+  const { projectName, isTypeScript, immediateInstall } = result
   const targetDir = path.resolve(process.cwd(), projectName)
 
-  // create project
-  const templateRoot = TEMPLATE_ROOT
-  renderTemplate(BASE_TEMPLATE_PATH, targetDir)
-  const variant = isTypeScript ? 'ts' : 'js'
-  renderTemplate(path.join(templateRoot, 'variants', variant), targetDir)
+  // Check based on the final interactive projectName
+  await prepareTargetDir(targetDir, overwrite)
 
-  // create lint
-  if (needsEslint) {
-    const eslintRoot = path.join(templateRoot, 'features', 'eslint')
-    // Step 1:  Base
-    renderTemplate(path.join(eslintRoot, 'base'), targetDir)
-    // Step 2: Core
-    renderTemplate(path.join(eslintRoot, 'core', variant), targetDir)
-  }
-  if (needsStylelint) {
-    const stylelintRoot = path.join(templateRoot, 'features', 'stylelint')
-    renderTemplate(path.join(stylelintRoot, 'base'), targetDir)
-    renderTemplate(path.join(stylelintRoot, 'core', variant), targetDir)
-  }
+  // create project (base -> variant -> optional features)
+  const variant: TemplateVariant = isTypeScript ? 'ts' : 'js'
+  const layers = resolveTemplateLayers({ variant, ...result })
+  applyTemplateLayers(layers, targetDir, { projectName })
 
   // install dependencies
-  if (install) {
-    installDependencies(targetDir)
+  if (immediateInstall) {
+    await installDependencies(targetDir)
   }
+
+  return projectName
 }
 
 
 /**
- * check for existence handle overwrite logic or exit the process
+ * check for existence handle overwrite logic or exit the process. (检查存在性并处理覆盖逻辑或退出进程)
  * @param targetDir target path
  * @param overwrite overwrite?
  */
@@ -76,15 +75,25 @@ async function prepareTargetDir(targetDir: string, overwrite: boolean) {
 }
 
 
+/**
+ * install dependencies in the target directory. (在目标目录安装依赖)
+ * @param targetDir target path. (目标路径)
+ * @throws error if installation fails
+ */
 async function installDependencies(targetDir: string) {
   const pkgManager = getPkgManager()
-  // not writing for now
-  try {
-    // await spawn(pkgManager, ['install'], {
-    //   cwd: targetDir,
-    //   stdio: 'inherit',
-    //   shell: true,
-    // })
-  } catch (e) {
-  }
+
+  await new Promise<void>((resolve, reject) => {
+    const child = spawn(pkgManager, ['install'], {
+      cwd: targetDir,
+      stdio: 'inherit',
+      shell: true,
+    })
+
+    child.on('error', reject)
+    child.on('exit', (code) => {
+      if (code === 0) return resolve()
+      reject(new Error(`Failed to run "${pkgManager} install" (exit code: ${code ?? 'unknown'}).`))
+    })
+  })
 }

@@ -2,13 +2,17 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { DEFAULT_PROJECT_NAME } from '../constants'
 
+export type RenderContext = {
+  projectName?: string
+}
+
 /**
  * Copies the files from the source directory to the destination directory.
  * This function is used to copy the template files to the project directory.
  * @param {string} src The source directory.
  * @param {string} dest The destination directory.
  */
-export function renderTemplate(src: string, dest: string) {
+export function renderTemplate(src: string, dest: string, context: RenderContext = {}) {
   const stats = fs.statSync(src)
   // is a directory?
   if (stats.isDirectory()) {
@@ -16,7 +20,7 @@ export function renderTemplate(src: string, dest: string) {
     for (const file of fs.readdirSync(src)) {
       const srcFile = path.resolve(src, file)
       const destFile = path.resolve(dest, file)
-      renderTemplate(srcFile, destFile)
+      renderTemplate(srcFile, destFile, context)
     }
     return
   }
@@ -28,7 +32,7 @@ export function renderTemplate(src: string, dest: string) {
     const merged = {
       ...existing,
       ...incoming,
-      name: DEFAULT_PROJECT_NAME,
+      name: context.projectName ?? DEFAULT_PROJECT_NAME,
       version: existing.version,
       scripts: { ...existing.scripts, ...incoming.scripts },
       dependencies: sortObject({ ...existing.dependencies, ...incoming.dependencies }),

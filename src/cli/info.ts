@@ -17,9 +17,8 @@ export function printHelp(): void {
     npm create vite-uniapp@latest [project-name] [options]
 
   ${colors.bold('Options:')}
-    -t, --template      ${colors.dim('specify template (default: vue3-ts)')}
+    -t, --template      ${colors.dim('specify template (default: ts)')}
     -f, --overwrite     ${colors.dim('if the directory already exists overwrite it')}
-    -i, --immediate     ${colors.dim('skip dependency installation')}
     -h, --help          ${colors.dim('show help information')}
     -v, --version       ${colors.dim('show version number')}
 
