@@ -13,9 +13,15 @@
     "esModuleInterop": true,
     "noEmit": true,
     "paths": {
-      "@pkg": ["./package.json"]
+      "@pkg": ["./package.json"],
+      "~types/*": ["./types/*"],
+      "@/*": ["./src/*"],
     },
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src", "types"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "src/templates/**/files/**"
+  ]
 }

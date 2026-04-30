@@ -3,10 +3,8 @@ import path from 'node:path'
 import { spawn } from 'node:child_process'
 import process from 'node:process'
 import colors from 'picocolors'
-import { getProjectInfo } from './create-prompts'
-import type { TemplateVariant } from '../templates/registry'
-import { resolveTemplateLayers } from '../templates/resolve'
-import { applyTemplateLayers } from '../templates/render'
+import { getProjectInfo } from '@/core/prompt'
+import { createFromTemplates } from '@/core/template-manager'
 import { getPkgManager } from '../utils/env'
 
 export interface CreateOptions {
@@ -36,16 +34,14 @@ export async function createProject(
 
   // collect project creation information
   const result = await getProjectInfo(name)
-  const { projectName, isTypeScript, immediateInstall } = result
+  const { projectName, immediateInstall } = result
   const targetDir = path.resolve(process.cwd(), projectName)
 
   // Check based on the final interactive projectName
   await prepareTargetDir(targetDir, overwrite)
 
   // create project (base -> variant -> optional features)
-  const variant: TemplateVariant = isTypeScript ? 'ts' : 'js'
-  const layers = resolveTemplateLayers({ variant, ...result })
-  applyTemplateLayers(layers, targetDir, { projectName })
+  await createFromTemplates({ targetDir, ...result, })
 
   // install dependencies
   if (immediateInstall) {

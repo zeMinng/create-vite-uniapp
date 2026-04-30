@@ -6,7 +6,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 // default project name (默认项目名称)
 export const DEFAULT_PROJECT_NAME = 'my-vite-uniapp'
 // template root directory (模板根目录)
-export const TEMPLATE_ROOT = path.resolve(__dirname, '../templates')
+export const TEMPLATE_ROOT = path.resolve(__dirname, '../src/templates')
 // base template path (基础模板路径)
 export const BASE_TEMPLATE_PATH = path.join(TEMPLATE_ROOT, 'base')
 

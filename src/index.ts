@@ -4,7 +4,7 @@ import { DEFAULT_PROJECT_NAME, MESSAGES } from './constants'
 import { formatTargetDir } from './utils/validate'
 import { getPkgManager } from './utils/env'
 import { printHelp, getVersion } from './cli/info'
-import { createProject } from './actions/create'
+import { createProject } from '@/commands/create'
 
 const argv = mri<{
   template?: string
