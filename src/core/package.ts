@@ -6,7 +6,7 @@ export function mergePackageJson(base: PackageJson, extra: PackageJson): Package
   return {
     ...base,
     ...extra,
-    scripts: mergeAndSort(
+    scripts: mergeKeepingOrder(
       asStringMap(base.scripts),
       asStringMap(extra.scripts),
     ),
@@ -36,6 +36,13 @@ function mergeAndSort(
     sorted[key] = merged[key]
   }
   return sorted
+}
+
+function mergeKeepingOrder(
+  left: Record<string, string>,
+  right: Record<string, string>,
+): Record<string, string> {
+  return { ...left, ...right }
 }
 
 function asStringMap(input: unknown): Record<string, string> {

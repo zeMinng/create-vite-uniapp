@@ -6,7 +6,6 @@ const template: Template = {
   extendPackageJson(pkg, ctx) {
     pkg.name = ctx.projectName
     pkg.version = '1.0.0'
-    pkg.private = true
   }
 }
 
