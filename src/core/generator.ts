@@ -6,9 +6,7 @@ import { renderDir } from './renderer'
 import { resolveTemplates } from './resolver'
 
 export async function generate(ctx: TemplateContext): Promise<void> {
-  console.log('%c [ ctx ]-9', 'font-size:13px; background:pink; color:#bf2c9f;', ctx)
   const layers = await resolveTemplates(ctx)
-  console.log('%c [ layers ]-10', 'font-size:13px; background:pink; color:#bf2c9f;', layers)
 
   for (const layer of layers) {
     await layer.template.beforeRender?.(ctx)

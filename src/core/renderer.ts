@@ -3,7 +3,7 @@ import path from 'node:path'
 import type { TemplateContext } from './context'
 
 const TEXT_TEMPLATE_EXTENSIONS = new Set([
-  '.js', '.ts', '.mts', '.cts',
+  '.js', '.ts', '.mjs', '.mts', '.cts',
   '.json', '.md', '.txt', '.vue', '.html',
   '.css', '.scss', '.sass', '.less',
   '.yml', '.yaml', '.xml', '.d.ts',

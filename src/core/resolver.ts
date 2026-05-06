@@ -16,7 +16,7 @@ export async function resolveTemplates(ctx: TemplateContext): Promise<TemplateLa
     if (!fs.existsSync(featureRoot) || !fs.existsSync(filesDir)) {
       continue
     }
-    layers.push(await loadTemplateLayer(featurePath))
+    layers.push(await loadTemplateLayer(featurePath, ctx))
   }
 
   return layers

@@ -22,8 +22,19 @@ export function mergePackageJson(base: PackageJson, extra: PackageJson): Package
 }
 
 export function writePackageJson(ctx: TemplateContext): void {
+  sortDependencyMapsInPlace(ctx.pkg)
   const file = path.join(ctx.root, 'package.json')
   fs.writeFileSync(file, `${JSON.stringify(ctx.pkg, null, 2)}\n`)
+}
+
+/** Ensures stable alphabetical key order after merges and extendPackageJson spreads. */
+function sortDependencyMapsInPlace(pkg: PackageJson): void {
+  if (pkg.dependencies && typeof pkg.dependencies === 'object') {
+    pkg.dependencies = sortKeysAlphabetically(asStringMap(pkg.dependencies))
+  }
+  if (pkg.devDependencies && typeof pkg.devDependencies === 'object') {
+    pkg.devDependencies = sortKeysAlphabetically(asStringMap(pkg.devDependencies))
+  }
 }
 
 function mergeAndSort(
@@ -31,9 +42,13 @@ function mergeAndSort(
   right: Record<string, string>,
 ): Record<string, string> {
   const merged = { ...left, ...right }
+  return sortKeysAlphabetically(merged)
+}
+
+function sortKeysAlphabetically(record: Record<string, string>): Record<string, string> {
   const sorted: Record<string, string> = {}
-  for (const key of Object.keys(merged).sort()) {
-    sorted[key] = merged[key]
+  for (const key of Object.keys(record).sort()) {
+    sorted[key] = record[key]
   }
   return sorted
 }
