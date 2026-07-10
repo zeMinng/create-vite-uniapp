@@ -210,15 +210,6 @@ export async function renderTemplate(targetPath: string, result: ProjectInfoResu
       imports,
       plugins,
       configs,
-    )
-    pkgJson = await applyInject(
-      languageDir,
-      result.isTypeScript,
-      targetPath,
-      pkgJson,
-      imports,
-      plugins,
-      configs,
       mainImports,
       mainSetup,
       mainCreateApp,
@@ -235,15 +226,6 @@ export async function renderTemplate(targetPath: string, result: ProjectInfoResu
     if (!existsSync(pluginDir)) continue
 
     // 4a. Apply _inject.json (应用 _inject.json)
-    pkgJson = await applyInject(
-      pluginDir,
-      result.isTypeScript,
-      targetPath,
-      pkgJson,
-      imports,
-      plugins,
-      configs,
-    )
     pkgJson = await applyInject(
       pluginDir,
       result.isTypeScript,

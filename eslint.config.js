@@ -7,5 +7,5 @@ export default defineConfig([
   js.configs.recommended,
   ...tseslint.configs.recommended,
   prettier,
-  globalIgnores(['dist', 'templates', 'node_modules', 'index.js']),
+  globalIgnores(['dist', 'templates', 'node_modules', 'index.js', '.e2e-temp']),
 ])
