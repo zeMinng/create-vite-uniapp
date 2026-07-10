@@ -1,0 +1,18 @@
+{
+  "name": "pinia",
+  "display": "Pinia",
+  "description": "State management",
+  "order": 30,
+  "package.json": {
+    "dependencies": {
+      "pinia": "^3.0.1",
+      "pinia-plugin-persistedstate": "^4.2.0"
+    }
+  },
+  "main.imports": [
+    "import store from './store'"
+  ],
+  "main.createApp": [
+    "app.use(store)"
+  ]
+}

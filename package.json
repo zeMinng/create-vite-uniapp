@@ -1,0 +1,64 @@
+{
+  "name": "create-vite-uniapp",
+  "version": "0.0.6",
+  "description": "A fast CLI for scaffolding production-grade UniApp projects.",
+  "type": "module",
+  "bin": {
+    "create-uniapp": "index.js"
+  },
+  "files": [
+    "index.js",
+    "templates",
+    "dist"
+  ],
+  "scripts": {
+    "dev": "tsdown --watch",
+    "build": "tsdown",
+    "typecheck": "tsc",
+    "release": "bumpp",
+    "test": "vitest run",
+    "test:unit": "vitest run tests/unit",
+    "test:integration": "vitest run tests/integration",
+    "test:watch": "vitest"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zeMinng/create-vite-uniapp.git"
+  },
+  "keywords": [
+    "create-vite",
+    "create-vite-uniapp",
+    "create-uniapp",
+    "uniapp",
+    "vue",
+    "vite",
+    "cli",
+    "scaffold",
+    "boilerplate",
+    "template"
+  ],
+  "author": "zeMinng",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zeMinng/create-vite-uniapp/issues"
+  },
+  "homepage": "https://github.com/zeMinng/create-vite-uniapp#readme",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "devDependencies": {
+    "@clack/prompts": "^1.7.0",
+    "@types/node": "^26.1.0",
+    "bumpp": "^11.1.0",
+    "execa": "^9.6.1",
+    "mri": "^1.2.0",
+    "picocolors": "^1.1.1",
+    "tsdown": "^0.22.3",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.10"
+  }
+}

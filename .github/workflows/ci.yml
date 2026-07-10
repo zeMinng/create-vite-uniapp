@@ -1,0 +1,91 @@
+name: 'ci'
+on:
+  push:
+    branches:
+      - '**'
+      - '!renovate/**'
+    paths-ignore:
+      - README.md
+      - README.zh-CN.md
+      - CONTRIBUTING.md
+      - LICENSE
+  pull_request:
+    branches:
+      - '**'
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: 'Build & Check'
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: 24
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run build
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: build-output
+          path: dist
+          retention-days: 3
+
+  verify-unit:
+    needs: build
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node-version: [22, 24]
+        exclude:
+          # Node version issues are rarely platform-specific, skip non-active-LTS on Windows/macOS
+          - os: windows-latest
+            node-version: 22
+          - os: macos-latest
+            node-version: 22
+    runs-on: ${{ matrix.os }}
+    name: 'unit (${{ matrix.os }}, node ${{ matrix.node-version }})'
+    continue-on-error: ${{ matrix.os == 'windows-latest' }}
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: build-output
+          path: dist
+
+      - run: npm ci
+      - name: Run unit tests
+        run: npm run test:unit
+
+  verify-integration:
+    needs: build
+    runs-on: ubuntu-latest
+    name: 'integration (ubuntu-latest, node 24)'
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: 24
+          cache: 'npm'
+
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: build-output
+          path: dist
+
+      - run: npm ci
+      - name: Run integration tests
+        run: npm run test:integration
