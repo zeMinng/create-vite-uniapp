@@ -18,14 +18,15 @@ export const printCliMsg = {
   ${colors.yellow('Next steps:')}
     cd ${name}${installSucceeded ? '' : `\n    ${pkgManager} install`}
     ${pkgManager} run dev
-  `
+  `,
 }
 
 /**
  * print help information (打印帮助信息)
  */
 export function printHelp(): void {
-  console.log(`
+  console.log(
+    `
   ${colors.cyan(colors.bold('create-vite-uniapp: quickly create a uniapp project.'))}
 
   ${colors.bold('Usage:')}
@@ -41,5 +42,6 @@ export function printHelp(): void {
 
   ${colors.bold('Example:')}
     npm create vite-uniapp@latest my-vite-uniapp -y --no-install --no-git
-  `.trim())
+  `.trim(),
+  )
 }

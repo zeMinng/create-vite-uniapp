@@ -27,7 +27,7 @@ describe('env utils', () => {
   it('getPkgManager defaults to npm', () => {
     process.env.npm_config_user_agent = 'npm/9.0.0 node/v18.0.0 linux x64'
     expect(getPkgManager()).toBe('npm')
-    
+
     process.env.npm_config_user_agent = undefined
     expect(getPkgManager()).toBe('npm')
   })

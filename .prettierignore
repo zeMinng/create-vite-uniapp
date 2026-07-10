@@ -1,0 +1,6 @@
+dist/
+templates/
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+.e2e-temp/

@@ -10,7 +10,7 @@ export async function checkForUpdates(): Promise<string | null> {
     timer.unref?.()
 
     const res = await fetch(`https://registry.npmjs.org/${getPackageName()}/latest`, {
-      signal: controller.signal
+      signal: controller.signal,
     })
     if (!res.ok) return null
 
@@ -18,5 +18,7 @@ export async function checkForUpdates(): Promise<string | null> {
     const current = getVersion()
 
     return version !== current ? version : null
-  } catch { return null }
+  } catch {
+    return null
+  }
 }

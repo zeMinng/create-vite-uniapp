@@ -3,7 +3,7 @@ name: Publish-Release
 on:
   push:
     tags:
-      - "v*"
+      - 'v*'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -20,13 +20,13 @@ jobs:
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
         with:
           persist-credentials: false
-          fetch-depth: "0"
+          fetch-depth: '0'
 
       - name: Setup node
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
         with:
           node-version: lts/*
-          cache: ""
+          cache: ''
           package-manager-cache: false
           registry-url: https://registry.npmjs.org
 

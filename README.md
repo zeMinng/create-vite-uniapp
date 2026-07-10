@@ -34,14 +34,14 @@ npm create vite-uniapp@latest my-app -y
 
 ### ⚙️ CLI Options
 
-| Option | Alias | Description |
-|---|---|---|
-| `--help` | `-h` | Show help information and exit |
-| `--version` | `-v` | Show version number and exit |
-| `--overwrite` | `-f` | Force overwrite existing target directory |
-| `--yes` | `-y` | Skip all prompts and use defaults |
-| `--install` | `-i` | Install dependencies after creation |
-| `--git` | `-g` | Initialize Git repository after creation |
+| Option        | Alias | Description                               |
+| ------------- | ----- | ----------------------------------------- |
+| `--help`      | `-h`  | Show help information and exit            |
+| `--version`   | `-v`  | Show version number and exit              |
+| `--overwrite` | `-f`  | Force overwrite existing target directory |
+| `--yes`       | `-y`  | Skip all prompts and use defaults         |
+| `--install`   | `-i`  | Install dependencies after creation       |
+| `--git`       | `-g`  | Initialize Git repository after creation  |
 
 `--install` and `--git` support negation: `--no-install`, `--no-git`.
 
