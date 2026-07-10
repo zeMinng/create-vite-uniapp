@@ -36,7 +36,9 @@ export function discoverPlugins(): PluginMeta[] {
         order: config.order ?? 999,
         dir,
       })
-    } catch { continue }
+    } catch {
+      continue
+    }
   }
   return plugins.sort((a, b) => a.order - b.order)
 }

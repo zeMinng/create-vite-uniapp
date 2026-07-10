@@ -71,9 +71,8 @@ function injectViteConfig(opts: {
     const lastImportIdx = content.lastIndexOf('import ')
     if (lastImportIdx !== -1) {
       const lineEnd = content.indexOf('\n', lastImportIdx)
-      content = content.slice(0, lineEnd + 1)
-        + imports.join('\n') + '\n'
-        + content.slice(lineEnd + 1)
+      content =
+        content.slice(0, lineEnd + 1) + imports.join('\n') + '\n' + content.slice(lineEnd + 1)
     } else {
       content = imports.join('\n') + '\n' + content
     }
@@ -92,29 +91,25 @@ function injectViteConfig(opts: {
   }
 
   if (plugins.length > 0) {
-    content = content.replace(
-      /plugins:\s*\[([^\]]*)\]/,
-      (_: string, existing: string) => {
-        const exist = existing.trim()
-        return `plugins: [${exist ? exist + ', ' : ''}${plugins.join(', ')}]`
-      },
-    )
+    content = content.replace(/plugins:\s*\[([^\]]*)\]/, (_: string, existing: string) => {
+      const exist = existing.trim()
+      return `plugins: [${exist ? exist + ', ' : ''}${plugins.join(', ')}]`
+    })
   }
 
   writeFileSync(configPath, content, 'utf-8')
 }
 
 /** Format a config object as indented JS object literal entries. */
-function formatTopLevelConfig(
-  config: Record<string, unknown>,
-  indent: string,
-): string {
-  return Object.entries(config).map(([key, value]) => {
-    const jsonLines = JSON.stringify(value, null, 2).split('\n')
-    const first = `${indent}${key}: ${jsonLines[0]}`
-    const rest = jsonLines.slice(1).map(l => indent + l)
-    return [first, ...rest].join('\n')
-  }).join(',\n')
+function formatTopLevelConfig(config: Record<string, unknown>, indent: string): string {
+  return Object.entries(config)
+    .map(([key, value]) => {
+      const jsonLines = JSON.stringify(value, null, 2).split('\n')
+      const first = `${indent}${key}: ${jsonLines[0]}`
+      const rest = jsonLines.slice(1).map((l) => indent + l)
+      return [first, ...rest].join('\n')
+    })
+    .join(',\n')
 }
 
 /**
@@ -147,9 +142,8 @@ export function injectMainFile(opts: {
     const lastImportIdx = content.lastIndexOf('import ')
     if (lastImportIdx !== -1) {
       const lineEnd = content.indexOf('\n', lastImportIdx)
-      content = content.slice(0, lineEnd + 1)
-        + mainImports.join('\n') + '\n'
-        + content.slice(lineEnd + 1)
+      content =
+        content.slice(0, lineEnd + 1) + mainImports.join('\n') + '\n' + content.slice(lineEnd + 1)
     } else {
       content = mainImports.join('\n') + '\n' + content
     }
@@ -172,7 +166,7 @@ export function injectMainFile(opts: {
     if (idx !== -1) {
       const lineStart = content.lastIndexOf('\n', idx) + 1
       const indent = content.slice(lineStart, idx)
-      const injectedLines = mainCreateApp.map(line => indent + line).join('\n')
+      const injectedLines = mainCreateApp.map((line) => indent + line).join('\n')
       const insertAt = idx + createAppLine.length
       content = content.slice(0, insertAt) + '\n' + injectedLines + content.slice(insertAt)
     }
@@ -186,10 +180,7 @@ export function injectMainFile(opts: {
  * @param targetPath - The target directory path. (目标目录路径)
  * @param result - The project information result. (项目信息结果)
  */
-export async function renderTemplate(
-  targetPath: string,
-  result: ProjectInfoResult,
-): Promise<void> {
+export async function renderTemplate(targetPath: string, result: ProjectInfoResult): Promise<void> {
   // 1. create target directory. (创建目标目录)
   await fs.mkdir(targetPath, { recursive: true })
   // 2. copy base template. (拷贝 base 模板)
@@ -211,7 +202,18 @@ export async function renderTemplate(
   // copy language template (拷贝语言模板)
   const languageDir = LANGUAGE_TEMPLATE_PATH
   if (existsSync(languageDir)) {
-    pkgJson = await applyInject(languageDir, result.isTypeScript, targetPath, pkgJson, imports, plugins, configs, mainImports, mainSetup, mainCreateApp)
+    pkgJson = await applyInject(
+      languageDir,
+      result.isTypeScript,
+      targetPath,
+      pkgJson,
+      imports,
+      plugins,
+      configs,
+      mainImports,
+      mainSetup,
+      mainCreateApp,
+    )
     const langSubDir = path.join(languageDir, result.isTypeScript ? 'ts' : 'js')
     if (existsSync(langSubDir)) {
       await copyContents(langSubDir, targetPath)
@@ -224,7 +226,18 @@ export async function renderTemplate(
     if (!existsSync(pluginDir)) continue
 
     // 4a. Apply _inject.json (应用 _inject.json)
-    pkgJson = await applyInject(pluginDir, result.isTypeScript, targetPath, pkgJson, imports, plugins, configs, mainImports, mainSetup, mainCreateApp)
+    pkgJson = await applyInject(
+      pluginDir,
+      result.isTypeScript,
+      targetPath,
+      pkgJson,
+      imports,
+      plugins,
+      configs,
+      mainImports,
+      mainSetup,
+      mainCreateApp,
+    )
 
     // 4b. Copy language-specific files (拷贝语言特定文件)
     const langDir = path.join(pluginDir, result.isTypeScript ? 'ts' : 'js')
@@ -246,7 +259,13 @@ export async function renderTemplate(
   injectViteConfig({ targetDir: targetPath, isTS: result.isTypeScript, imports, plugins, configs })
 
   // 6. Inject main file. (如果有 main 注入项 → 修改 main.{ts|js})
-  injectMainFile({ targetDir: targetPath, isTS: result.isTypeScript, mainImports, mainSetup, mainCreateApp })
+  injectMainFile({
+    targetDir: targetPath,
+    isTS: result.isTypeScript,
+    mainImports,
+    mainSetup,
+    mainCreateApp,
+  })
 
   // 7. Write project name. (写入项目名并回写 package.json)
   pkgJson.name = result.projectName

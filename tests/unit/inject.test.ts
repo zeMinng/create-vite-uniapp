@@ -141,7 +141,13 @@ describe('injectMainFile', () => {
   it('no-op when main file does not exist', () => {
     // injectMainFile silently returns when src/main.ts is missing
     expect(() =>
-      injectMainFile({ targetDir: tmpDir, isTS: true, mainImports: ['import x from "y"'], mainSetup: [], mainCreateApp: [] })
+      injectMainFile({
+        targetDir: tmpDir,
+        isTS: true,
+        mainImports: ['import x from "y"'],
+        mainSetup: [],
+        mainCreateApp: [],
+      }),
     ).not.toThrow()
   })
 
