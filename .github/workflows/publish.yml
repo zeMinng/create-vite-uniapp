@@ -1,4 +1,4 @@
-name: Publish
+name: Publish-Release
 
 on:
   push:
@@ -10,7 +10,7 @@ concurrency:
 
 jobs:
   release:
-    environment: Publish
+    environment: Publish-Release
     runs-on: ubuntu-latest
     permissions:
       contents: write
