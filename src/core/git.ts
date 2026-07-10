@@ -9,8 +9,12 @@ export async function initGitRepo(targetDir: string): Promise<boolean> {
     execSync('git --version', { stdio: 'ignore' })
     execSync('git init', { cwd: targetDir, stdio: 'ignore' })
     execSync('git add -A', { cwd: targetDir, stdio: 'ignore' })
-    execSync('git commit -m "chore: initial commit from create-vite-uniapp"',
-      { cwd: targetDir, stdio: 'ignore' })
+    execSync('git commit -m "chore: initial commit from create-vite-uniapp"', {
+      cwd: targetDir,
+      stdio: 'ignore',
+    })
     return true
-  } catch { return false }
+  } catch {
+    return false
+  }
 }

@@ -8,16 +8,14 @@ import { prepareTargetDir, isValidPackageName } from '../utils/validate'
 import type { ProjectInfoResult } from '../types'
 import { discoverPlugins } from './plugins'
 
-export async function getProjectInfo(
-  options: {
-    name: string
-    targetPath: string
-    overwrite?: boolean
-    yes?: boolean
-  },
-): Promise<ProjectInfoResult> {
+export async function getProjectInfo(options: {
+  name: string
+  targetPath: string
+  overwrite?: boolean
+  yes?: boolean
+}): Promise<ProjectInfoResult> {
   const { name, targetPath, overwrite = false, yes = false } = options
-  
+
   prompts.intro(colors.bgCyan(colors.black(` ${name ?? DEFAULT_PROJECT_NAME} `)))
 
   // 1. check if a directory with the same name exists. (检查同名目录是否存在)
@@ -42,57 +40,68 @@ export async function getProjectInfo(
   }
 
   // 2. interactive prompt. (交互式询问)
-  const result = await prompts.group({
-    projectName: () => prompts.text({
-      message: 'Project name:',
-      placeholder: DEFAULT_PROJECT_NAME,
-      initialValue: name ?? DEFAULT_PROJECT_NAME,
-      validate: (value?: string) => {
-        if (!value?.trim()) return 'Project name is required'
-        if (!isValidPackageName(value)) return 'Invalid package name'
+  const result = await prompts.group(
+    {
+      projectName: () =>
+        prompts.text({
+          message: 'Project name:',
+          placeholder: DEFAULT_PROJECT_NAME,
+          initialValue: name ?? DEFAULT_PROJECT_NAME,
+          validate: (value?: string) => {
+            if (!value?.trim()) return 'Project name is required'
+            if (!isValidPackageName(value)) return 'Invalid package name'
+          },
+        }),
+
+      isTypeScript: () =>
+        prompts.select({
+          message: 'Pick a language:',
+          options: [
+            { value: true, label: 'TypeScript', hint: 'recommended' },
+            { value: false, label: 'JavaScript' },
+          ],
+          initialValue: true,
+        }),
+
+      plugins: () => {
+        const availablePlugins = discoverPlugins()
+        if (availablePlugins.length === 0) {
+          return Promise.resolve([])
+        }
+        return prompts.multiselect({
+          message: 'Select optional features:',
+          options: availablePlugins.map((p) => ({
+            value: p.name,
+            label: p.display,
+            hint: p.description,
+          })),
+          required: false,
+        })
       },
-    }),
 
-    isTypeScript: () => prompts.select({
-      message: 'Pick a language:',
-      options: [
-        { value: true, label: 'TypeScript', hint: 'recommended' },
-        { value: false, label: 'JavaScript' },
-      ],
-      initialValue: true,
-    }),
+      install: () =>
+        prompts
+          .confirm({
+            message: 'Install dependencies?',
+            initialValue: false,
+          })
+          .then((v: boolean | symbol) => v),
 
-    plugins: () => {
-      const availablePlugins = discoverPlugins()
-      if (availablePlugins.length === 0) {
-        return Promise.resolve([])
-      }
-      return prompts.multiselect({
-        message: 'Select optional features:',
-        options: availablePlugins.map(p => ({
-          value: p.name,
-          label: p.display,
-          hint: p.description,
-        })),
-        required: false,
-      })
+      git: () =>
+        prompts
+          .confirm({
+            message: 'Initialize Git repository?',
+            initialValue: true,
+          })
+          .then((v: boolean | symbol) => v),
     },
-
-    install: () => prompts.confirm({
-      message: 'Install dependencies?',
-      initialValue: false,
-    }).then((v: boolean | symbol) => v),
-
-    git: () => prompts.confirm({
-      message: 'Initialize Git repository?',
-      initialValue: true,
-    }).then((v: boolean | symbol) => v),
-  }, {
-    onCancel: () => {
-      prompts.cancel('Operation cancelled.')
-      process.exit(0)
-    }
-  })
+    {
+      onCancel: () => {
+        prompts.cancel('Operation cancelled.')
+        process.exit(0)
+      },
+    },
+  )
 
   // 3. Delete Old Directory.  (在 outro 前删除旧目录，保持交互视觉连贯)
   const targetDir = path.resolve(process.cwd(), result.projectName)

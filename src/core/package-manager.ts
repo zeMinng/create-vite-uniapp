@@ -18,7 +18,7 @@ function exec(command: string, args: string[], options: { cwd: string }): Promis
 
 /**
  * Install dependencies in the target directory using the detected package manager.
- * (在目标目录中使用检测到的包管理器安装依赖) 
+ * (在目标目录中使用检测到的包管理器安装依赖)
  */
 export async function installDependencies(targetDir: string): Promise<boolean> {
   const pm = getPkgManager()

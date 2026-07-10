@@ -2,7 +2,7 @@
 export interface ProjectInfoResult {
   projectName: string
   isTypeScript: boolean
-  plugins: string[]       // 用户选中的插件名数组，如 ['eslint', 'pinia']
+  plugins: string[] // 用户选中的插件名数组，如 ['eslint', 'pinia']
   install: boolean
   git: boolean
 }
