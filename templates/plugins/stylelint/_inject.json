@@ -4,12 +4,15 @@
   "description": "CSS/SCSS style linting",
   "order": 20,
   "package.json": {
+    "scripts": {
+      "lint:style": "stylelint \"**/*.{css,scss,vue}\" --fix"
+    },
     "devDependencies": {
-      "postcss-html": "^1.8.0",
-      "stylelint": "^16.26.1",
-      "stylelint-config-standard-scss": "^16.0.0",
-      "stylelint-order": "^7.0.1",
-      "stylelint-scss": "^6.14.0"
+      "postcss-html": "^1.8.1",
+      "stylelint": "^17.14.0",
+      "stylelint-config-standard-scss": "^17.0.0",
+      "stylelint-order": "^8.1.1",
+      "stylelint-scss": "^7.2.0"
     }
   }
 }

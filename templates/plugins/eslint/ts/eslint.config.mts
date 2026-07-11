@@ -14,12 +14,17 @@ export default defineConfig([
       'node_modules/**',
       'dist/**',
       'build/**',
+      "shims-uni.d.ts",
+      "src/shime-uni.d.ts",
+      "src/env.d.ts",
     ],
   },
   /** 自定义规则 */
   {
     files: ['src/**/*.{ts,js,vue}'],
     rules: {
+      // 是否多单词组件名称
+      'vue/multi-word-component-names': 'off', // 建议保留
       // 禁用代码结尾分号
       'semi': ['error', 'never'],
       // 使用单引号
@@ -42,8 +47,6 @@ export default defineConfig([
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-empty-function': 'warn',
       'jsx-quotes': ['error', 'prefer-double'],
-      // 是否多单词组件名称
-      'vue/multi-word-component-names': 'off',
     },
   }
 ])
