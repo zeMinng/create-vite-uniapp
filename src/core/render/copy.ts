@@ -2,6 +2,10 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { existsSync } from 'node:fs'
 
+const FILE_NAME_MAP: Record<string, string> = {
+  _gitignore: '.gitignore',
+}
+
 /**
  * Copy the contents of a directory to another directory. (拷贝目录的内容到另一个目录)
  * @param src - The source directory path. (源目录路径)
@@ -14,7 +18,7 @@ export async function copyContents(src: string, dest: string): Promise<void> {
   const entries = await fs.readdir(src, { withFileTypes: true })
   for (const entry of entries) {
     const srcPath = path.join(src, entry.name)
-    const destPath = path.join(dest, entry.name)
-    await fs.cp(srcPath, destPath, { recursive: true })
+    const destPath = path.join(dest, FILE_NAME_MAP[entry.name] || entry.name)
+    await fs.cp(srcPath, destPath, { recursive: true }) // For monolithic projects only, no Monorepo support.
   }
 }
