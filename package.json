@@ -1,6 +1,6 @@
 {
   "name": "create-vite-uniapp",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A fast CLI for scaffolding production-grade UniApp projects.",
   "type": "module",
   "bin": {
