@@ -2,9 +2,9 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import os from 'node:os'
-import { parseInject } from '../../src/core/render/inject'
-import { injectMainFile } from '../../src/core/render/index'
-import { TEMPLATE_ROOT } from '../../src/constants'
+import { parseInject } from '@/core/render/inject'
+import { injectMainFile } from '@/core/render/index'
+import { TEMPLATE_ROOT } from '@/constants'
 
 const TS_FIXTURE = `import { createSSRApp } from "vue";
 import App from "./App.vue";

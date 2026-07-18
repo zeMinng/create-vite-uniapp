@@ -7,7 +7,7 @@ import { renderTemplate } from '@/core/render'
 import { getCombinations } from './utils'
 import type { ProjectInfoResult } from '@/types'
 
-const E2E_TEMP_DIR = path.resolve(__dirname, '../../.e2e-temp')
+const E2E_TEMP_DIR = path.resolve(import.meta.dirname, '../../.e2e-temp')
 
 describe('E2E Template Generation and Build', () => {
   const plugins = discoverPlugins().map((p) => p.name)

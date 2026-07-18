@@ -1,4 +1,5 @@
 import path from 'node:path'
+import fs from 'node:fs'
 import { fileURLToPath } from 'node:url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -7,7 +8,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
  * default project name (默认项目名称)
  */
 export const DEFAULT_PROJECT_NAME = 'my-vite-uniapp'
-import fs from 'node:fs'
 /**
  * template root directory (模板根目录)
  */
