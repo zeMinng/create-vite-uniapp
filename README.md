@@ -1,3 +1,5 @@
+
+
 # create-vite-uniapp
 
 [![npm version](https://img.shields.io/npm/v/create-vite-uniapp?color=42b883&logo=npm)](https://www.npmjs.com/package/create-vite-uniapp)
@@ -14,7 +16,7 @@ A lightning-fast CLI for scaffolding uni-app projects powered by Vite. Designed 
 npm create vite-uniapp@latest
 
 # pnpm
-pnpm create vite-uniapp
+pnpm create vite-uniapp@latest
 ```
 
 ## 📖 Usage
