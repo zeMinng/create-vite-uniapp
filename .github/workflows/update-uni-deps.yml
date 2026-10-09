@@ -25,7 +25,9 @@ jobs:
 
       - name: Update uni-app dependencies
         working-directory: templates/base
-        run: npx --yes @dcloudio/uvm@latest
+        shell: bash
+        run: |
+          printf '0\n' | npx --yes @dcloudio/uvm@latest
 
       - name: Validate changes
         run: |
