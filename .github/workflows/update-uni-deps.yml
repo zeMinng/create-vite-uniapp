@@ -1,0 +1,52 @@
+name: Update uni-app template dependencies
+
+on:
+  schedule:
+    # 每周一 02:30 UTC
+    - cron: '30 2 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-uni-deps:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Update uni-app dependencies
+        working-directory: templates/base
+        run: npx --yes @dcloudio/uvm@latest
+
+      - name: Validate changes
+        run: |
+          git diff --check
+          git diff -- templates/base/package.json
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ secrets.PR_BOT_TOKEN }}
+          branch: bot/update-uni-dependencies
+          delete-branch: true
+          add-paths: |
+            templates/base/package.json
+          commit-message: 'chore: update uni-app template dependencies'
+          title: 'chore: update uni-app template dependencies'
+          body: |
+            Automated dependency update using @dcloudio/uvm.
+
+            Please review:
+            - Version consistency across @dcloudio packages
+            - Whether any version is an alpha release
+            - Whether scripts or migration changes are required
+            - Whether generated projects still build successfully
